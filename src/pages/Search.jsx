@@ -22,11 +22,16 @@ export default function Search() {
     }
 
     const search = async (pageParam) => {
-        setLoading(true);
-        const querySearch = inputRef.current.value;
-        const getIdsResponse = await axios.get(`${apiEndPoint}/public/collection/v1/search?q=${querySearch}`);
-        setSearchIds(getIdsResponse.data.objectIDs);
-        setLoading(false);
+        try {
+            setLoading(true);
+            setSearchIds(null);
+            const querySearch = inputRef.current.value;
+            const getIdsResponse = await axios.get(`${apiEndPoint}/public/collection/v1/search?q=${querySearch}`);
+            setSearchIds(getIdsResponse.data.objectIDs);
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     const handlePrevPage = () => {
@@ -56,9 +61,9 @@ export default function Search() {
             </div>
             <div className="results">
                 {
-                    !loading && searchIds !== null && searchIds.map((elem) => {
+                    !loading && searchIds !== null && searchIds.map((elem, index) => {
                         return (
-                            <ImageDisplay key={uuid()} id={elem} />
+                            <ImageDisplay key={uuid()} id={elem} indice={index} />
                         )
                     })
                 }
