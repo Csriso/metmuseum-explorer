@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from "axios";
 import "./Search.css"
-
+import uuid from 'react-uuid';
+import ImageDisplay from '../components/ImageDisplay';
+import ClipLoader from 'react-spinners/ClipLoader';
 export default function Search() {
     const [data, setData] = useState([]);
+    const [searchIds, setSearchIds] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [page, setPage] = useState(0);
+    const [resultsPerPage, setResultsPerPage] = useState(10);
     const apiEndPoint = "https://collectionapi.metmuseum.org";
     const inputRef = useRef();
 
@@ -15,23 +21,25 @@ export default function Search() {
         const response = await axios.get(`${apiEndPoint}/public/collection/v1/search`);
     }
 
-    const search = async () => {
+    const search = async (pageParam) => {
+        setLoading(true);
         const querySearch = inputRef.current.value;
         const getIdsResponse = await axios.get(`${apiEndPoint}/public/collection/v1/search?q=${querySearch}`);
-        // getIdsResponse.data.objectIDs.forEach(element => {
-        //     getObject(element);
-        // });
-        for (let index = 0; index < 10; index++) {
-            await getObject(getIdsResponse.data.objectIDs[index]);
-        }
-        // getObject(getIdsResponse.data.objectIDs[0]);
-        // console.log(getIdsResponse.data);
-    }
-    const getObject = async (id) => {
-        const getObjectResponse = await axios.get(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`);
-        await setData(data => [...data, getObjectResponse.data]);
+        setSearchIds(getIdsResponse.data.objectIDs);
+        setLoading(false);
     }
 
+    const handlePrevPage = () => {
+        const actualPage = page;
+        if (page !== 0) {
+            setPage(page - 1);
+        }
+        search(page - 1);
+    }
+    const handleNextPage = () => {
+        setPage(page + 1);
+        search(page + 1);
+    }
     // if (data === null) {
     //     return <p>Loading....</p>;
     // }
@@ -42,18 +50,20 @@ export default function Search() {
                 <input type="text" name="search" id="search" ref={inputRef} />
                 <button onClick={search}>Search</button>
             </div>
+            <div className="pagination">
+                <button onClick={handlePrevPage}>Prev</button>
+                <button onClick={handleNextPage}>Next</button>
+            </div>
             <div className="results">
                 {
-                    data.length !== 0 && data.map((elem) => {
+                    !loading && searchIds !== null && searchIds.map((elem) => {
                         return (
-                            <>
-                                <div className="result">
-                                    <h3>Author: {elem.artistDisplayName}</h3>
-                                    <img src={elem.primaryImage} alt="" width={500} />
-                                </div>
-                            </>
+                            <ImageDisplay key={uuid()} id={elem} />
                         )
                     })
+                }
+                {
+                    loading && <ClipLoader />
                 }
             </div>
         </div>
