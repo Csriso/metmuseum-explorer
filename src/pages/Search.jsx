@@ -50,9 +50,9 @@ export default function Search() {
     // }
     return (
         <div>
-            <div className="searchForm flex flex-row justify-center items-center mt-5">
+            <div className="searchForm flex flex-row justify-center items-center justify-items-center content-center mt-5">
                 <input type="text" name="search" id="search" className="w-3/12 block p-4 pl-10 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search" ref={inputRef} />
-                <button onClick={search} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Search</button>
+                <button onClick={search} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 ml-2">Search</button>
             </div>
             {/* <div className="pagination">
                 <button onClick={handlePrevPage}>Prev</button>
