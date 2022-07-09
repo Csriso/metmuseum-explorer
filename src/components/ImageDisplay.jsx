@@ -25,6 +25,9 @@ function ImageDisplay(props) {
 
         }
     }
+    if (imageData !== null && !imageData.isPublicDomain) {
+        return "";
+    }
 
     return (
         <div style={styleToUse}>
